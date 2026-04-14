@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3TO LOGIN PAGE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --accent: #ff8c00; /* Default, akan sinkron dengan Dashboard */
+            --text-dark: #0f172a;
+            /* Warna Background Utama Baru (Slate Ultra Light) */
+            --bg-base: #f1f5f9; 
+            /* Warna Kartu Login */
+            --card-bg: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Sinkronisasi Warna Aksen ke Elemen */
+        .btn-main:hover { background: var(--accent) !important; box-shadow: 0 15px 35px var(--accent-alpha); }
+        .logo-box span { color: var(--accent); }
+        .input-field:focus { border-color: var(--accent); box-shadow: 0 10px 30px var(--accent-alpha); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            /* Warna Background Solid Paling Belakang */
+            background: var(--bg-base);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: 0.5s;
+            position: relative;
+        }
+
+        /* Efek Latar Belakang Bergerak (Cahaya Aksen) */
+        .bg-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Di atas background solid, di bawah kartu */
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent);
+            filter: blur(80px);
+            opacity: 0.18; /* Sedikit dinaikkan agar kontras dengan bg baru */
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30vw, 20vh) scale(1.2); }
+            66% { transform: translate(-10vw, 40vh) scale(0.8); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            padding: 60px 45px;
+            border-radius: 45px;
+            width: 90%;
+            max-width: 440px;
+            /* Border lebih terlihat di atas bg baru */
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            box-shadow: 0 40px 100px rgba(15, 23, 42, 0.08); /* Shadow lebih dalam */
+            text-align: center;
+            z-index: 10; /* Paling depan */
+            position: relative;
+            transform: translateY(0);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .login-card:hover { transform: translateY(-5px); box-shadow: 0 50px 120px rgba(15, 23, 42, 0.1); }
+
+        .logo-box {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            letter-spacing: -3px;
+        }
+
+        .tagline {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+
+        h2 { color: var(--text-dark); font-weight: 800; margin-bottom: 30px; font-size: 1.4rem; letter-spacing: -1px; }
+
+        .input-group { position: relative; width: 100%; margin-bottom: 20px; }
+        .input-group i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #94a3b8; transition: 0.3s; z-index: 2; }
+
+        .input-field {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.9); /* Lebih solid agar kontras */
+            font-size: 1rem;
+            font-weight: 600;
+            transition: 0.4s;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-field:focus { outline: none; background: white; transform: scale(1.02); border-color: rgba(15, 23, 42, 0.1); }
+        .input-field:focus + i { color: var(--accent); }
+
+        .btn-main {
+            width: 100%;
+            padding: 20px;
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.4s;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        #alert {
+            min-height: 20px;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            padding: 12px;
+            border-radius: 14px;
+        }
+
+        .error-mode { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.2); }
+        .success-mode { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-circles">
+        <div class="circle" style="width: 400px; height: 400px; top: -10%; left: -10%;"></div>
+        <div class="circle" style="width: 300px; height: 300px; bottom: -5%; right: -5%; animation-delay: -5s;"></div>
+    </div>
+
+    <div class="login-card">
+        <div class="logo-box">P3TO<span>.</span></div>
+        <div class="tagline">DATABASE SECURE</div>
+        
+        <h2>Login Diperlukan</h2>
+
+        <div class="input-group">
+            <i class="fa-solid fa-user-shield"></i>
+            <input type="text" id="idUser" class="input-field" placeholder="User ID">
+        </div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="pwUser" class="input-field" placeholder="Security Key">
+        </div>
+
+        <button class="btn-main" onclick="initLogin()" id="loginBtn">
+            LOGIN <i class="fa-solid fa-shield-halved"></i>
+        </button>
+        
+        <p id="alert"></p>
+    </div>
+
+<script>
+        // --- KONFIGURASI PENGGUNA (Edit di sini untuk tambah/ubah) ---
+        const validUsers = [
+            { id: "P3TO-ADM", key: "BersamaUntukSelamanya" },
+            { id: "PEGASUS", key: "PEGASUSGOAT" } // Akun kedua kamu
+        ];
+
+        // Load Akses Warna dari Dashboard
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedColor = localStorage.getItem('p3to-accent-color') || '#ff8c00';
+            document.documentElement.style.setProperty('--accent', savedColor);
+            document.documentElement.style.setProperty('--accent-alpha', savedColor + '33');
+        });
+
+        function initLogin() {
+            const inputId = document.getElementById('idUser').value;
+            const inputPw = document.getElementById('pwUser').value;
+            const alertBox = document.getElementById('alert');
+            const btn = document.getElementById('loginBtn');
+
+            // Logika baru: Mencari apakah ada data yang cocok di dalam daftar 'validUsers'
+            const userFound = validUsers.find(user => user.id === inputId && user.key === inputPw);
+
+            if (userFound) {
+                // BERHASIL
+                alertBox.className = "success-mode";
+                alertBox.innerHTML = `<i class='fa-solid fa-circle-check'></i> Access granted. Hello, ${userFound.id}!`;
+                alertBox.style.display = "block";
+                btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Redirecting...";
+                btn.style.background = "#2ecc71";
+                
+                setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
+            } else {
+                // GAGAL
+                alertBox.className = "error-mode";
+                alertBox.innerHTML = "<i class='fa-solid fa-circle-exclamation'></i> Access denied. Verify credentials.";
+                alertBox.style.display = "block";
+                
+                // Animasi Getar (Shake)
+                const card = document.querySelector('.login-card');
+                card.animate([
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 300 });
+            }
+        }
+
+        // Support Enter Key
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') initLogin();
+        });
+    </script>
+</body>
+</html>

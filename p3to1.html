@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3TO GALLERY #1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root { 
+            --bg: #f8fafc; 
+            --text: #0f172a; 
+            --accent: #ff8c00; 
+            --card: #ffffff; 
+            --border: rgba(0,0,0,0.06); 
+        }
+
+        [data-theme="dark"] {
+            --bg: #020617;
+            --text: #f8fafc;
+            --card: #0f172a;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        /* Sinkronisasi Warna Aksen Dinamis */
+        h1 span, .counter-badge, .back-btn:hover { color: var(--accent) !important; }
+        .main-dl-all:hover, .single-dl-btn:hover { background-color: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg); color: var(--text); padding: 40px 8%; min-height: 100vh; }
+        
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; flex-wrap: wrap; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--text); font-weight: 800; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; }
+        
+        h1 { font-size: 3rem; font-weight: 800; letter-spacing: -3px; }
+        .counter-badge { display: inline-block; padding: 5px 15px; background: rgba(125,125,125,0.1); border-radius: 10px; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        .photo-card { background: var(--card); border-radius: 25px; overflow: hidden; border: 1px solid var(--border); transition: 0.4s ease; display: flex; flex-direction: column; }
+        .photo-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .img-container { width: 100%; height: 280px; overflow: hidden; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .download-area { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-top: 1px solid var(--border); }
+        .file-info { font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+
+        .single-dl-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid var(--border); transition: 0.3s; }
+        .main-dl-all { background: var(--text); color: var(--bg); border: none; padding: 15px 30px; border-radius: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i> DASHBOARD</a>
+    
+    <div class="header">
+        <div>
+            <h1>Arsip <span>P3TO 1</span></h1>
+            <div class="counter-badge" id="imgCounter">Mendeteksi gambar...</div>
+        </div>
+        <button class="main-dl-all" onclick="downloadAllImages()">
+            <i class="fa-solid fa-layer-group"></i> Download Semua
+        </button>
+    </div>
+
+<div class="photo-grid" id="mainGrid">
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/1.png" alt="Img 1"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_01.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/1.png', 'P3TO_IMG_01.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/2.png" alt="Img 2"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_02.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/2.png', 'P3TO_IMG_02.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/3.png" alt="Img 3"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_03.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/3.png', 'P3TO_IMG_03.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/4.png" alt="Img 4"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_04.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/4.png', 'P3TO_IMG_04.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/5.png" alt="Img 5"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_05.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/5.png', 'P3TO_IMG_05.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/6.png" alt="Img 6"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_06.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/6.png', 'P3TO_IMG_06.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/7.png" alt="Img 7"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_07.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/7.png', 'P3TO_IMG_07.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/8.png" alt="Img 8"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_08.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/8.png', 'P3TO_IMG_08.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/9.png" alt="Img 9"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_09.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/9.png', 'P3TO_IMG_09.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/10.png" alt="Img 10"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_10.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/10.png', 'P3TO_IMG_10.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/11.png" alt="Img 11"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_11.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/11.png', 'P3TO_IMG_11.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/13.png" alt="Img 13"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_13.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/13.png', 'P3TO_IMG_13.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/14.png" alt="Img 14"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_14.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/14.png', 'P3TO_IMG_14.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/15.png" alt="Img 15"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_15.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/15.png', 'P3TO_IMG_15.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/16.png" alt="Img 16"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_16.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/16.png', 'P3TO_IMG_16.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/17.png" alt="Img 17"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_17.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/17.png', 'P3TO_IMG_17.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/18.png" alt="Img 18"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_18.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/18.png', 'P3TO_IMG_18.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/19.png" alt="Img 19"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_19.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/19.png', 'P3TO_IMG_19.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+
+        <div class="photo-card">
+            <div class="img-container"><img src="P3TO1/20.png" alt="Img 20"></div>
+            <div class="download-area">
+                <span class="file-info">P3TO_IMG_20.PNG</span>
+                <a href="#" onclick="triggerDownload(this, 'P3TO1/20.png', 'P3TO_IMG_20.png')" class="single-dl-btn"><i class="fa-solid fa-download"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applySavedSettings() {
+            const savedTheme = localStorage.getItem('p3to-theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+
+            const savedColor = localStorage.getItem('p3to-accent-color');
+            if (savedColor) document.documentElement.style.setProperty('--accent', savedColor);
+        }
+
+        function updateImageCount() {
+            const total = document.querySelectorAll('.photo-card').length;
+            document.getElementById('imgCounter').innerHTML = `<i class="fa-solid fa-camera"></i> Terdeteksi: ${total} Gambar`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applySavedSettings();
+            updateImageCount();
+        });
+
+        async function downloadAllImages() {
+            const images = document.querySelectorAll('.photo-card img');
+            const btn = document.querySelector('.main-dl-all');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.style.pointerEvents = 'none';
+            
+            for (let i = 0; i < images.length; i++) {
+                await new Promise(r => setTimeout(r, 600)); 
+                forceDownload(images[i].src, `P3TO_SEKTOR1_${i+1}.jpg`);
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Selesai!';
+            setTimeout(() => { 
+                btn.innerHTML = originalHTML; 
+                btn.style.pointerEvents = 'all';
+            }, 3000);
+        }
+
+        function triggerDownload(element, url, name) {
+            event.preventDefault(); 
+            forceDownload(url, name);
+        }
+
+        function forceDownload(url, name) {
+            fetch(url).then(resp => resp.blob()).then(blob => {
+                const urlBlob = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = urlBlob; a.download = name;
+                document.body.appendChild(a); a.click();
+                window.URL.revokeObjectURL(urlBlob); document.body.removeChild(a);
+            }).catch(() => console.error('Gagal download: ' + url));
+        }
+    </script>
+</body>
+</html>
