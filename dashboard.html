@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3TO DASHBOARD | Premium Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #eef2f7;
+            --card: rgba(255, 255, 255, 0.4);
+            --text: #0f172a;
+            --text-muted: #475569;
+            --accent: #ff8c00; 
+            --border: rgba(255, 255, 255, 0.5);
+            --shadow: rgba(0, 0, 0, 0.08);
+            --neon-glow: rgba(255, 140, 0, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --bg: #030712;
+            --card: rgba(17, 24, 39, 0.4);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: rgba(0, 0, 0, 0.6);
+            --neon-glow: rgba(255, 140, 0, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            transition: all 0.5s ease; 
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Animasi Background Animated Mesh --- */
+        .mesh-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .mesh-gradient::before, .mesh-gradient::after {
+            content: "";
+            position: absolute;
+            width: 800px; height: 800px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: move 25s infinite alternate ease-in-out;
+        }
+
+        .mesh-gradient::before {
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            top: -200px; left: -200px;
+        }
+
+        .mesh-gradient::after {
+            background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+            bottom: -200px; right: -200px;
+            animation-delay: -10s;
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, 150px) scale(1.2); }
+            100% { transform: translate(-50px, 200px) scale(1); }
+        }
+
+        /* Grid Overlay */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- Navbar --- */
+        nav { padding: 30px 8%; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-text { font-size: 1.8rem; font-weight: 900; letter-spacing: -1.5px; color: var(--text); }
+        .logo-text span { color: var(--accent); text-shadow: 0 0 20px var(--accent); }
+
+        .gear-btn { width: 48px; height: 48px; background: var(--card); border: 1px solid var(--border); backdrop-filter: blur(12px); border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; color: var(--text); box-shadow: 0 8px 20px var(--shadow); }
+        .gear-btn:hover { background: var(--accent); color: white; transform: rotate(45deg); box-shadow: 0 10px 25px var(--neon-glow); }
+
+        .settings-panel { 
+            position: absolute; top: 85px; right: 8%; width: 280px; 
+            background: var(--card); backdrop-filter: blur(25px); 
+            border: 1px solid var(--border); border-radius: 24px; 
+            padding: 24px; box-shadow: 0 30px 60px var(--shadow);
+            opacity: 0; pointer-events: none; transform: translateY(-15px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+        .settings-panel.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        /* --- Hero --- */
+        .main-hero { max-width: 1200px; margin: 20px auto; padding: 0 5%; text-align: center; }
+        
+        .badge { 
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; background: var(--card); border: 1px solid var(--border);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 800; color: var(--text);
+            margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px;
+            backdrop-filter: blur(10px); box-shadow: 0 4px 15px var(--shadow);
+        }
+        .badge i { color: var(--accent); }
+
+        h1 { 
+            font-size: clamp(2.5rem, 8vw, 5.5rem); font-weight: 900; line-height: 0.9; 
+            margin-bottom: 50px; letter-spacing: -4px; color: var(--text);
+        }
+        .glow-text { color: var(--accent); -webkit-text-stroke: 1px var(--border); }
+
+        /* --- Gallery Card --- */
+        .gallery-card { 
+            background: var(--card); backdrop-filter: blur(30px); 
+            padding: 60px 40px; border-radius: 50px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 50px 100px var(--shadow);
+            position: relative; overflow: hidden;
+            max-width: 650px; margin: 0 auto;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .gallery-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+
+        .banner-slot {
+            width: 100%; height: 240px; margin-bottom: 40px; 
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .banner-slot img { 
+            max-width: 100%; max-height: 100%; object-fit: contain; 
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.3));
+            animation: floatLogo 4s infinite ease-in-out;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) scale(1.1); }
+            50% { transform: translateY(-15px) scale(1.15); }
+        }
+
+        h2 { font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -1.5px; }
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; font-weight: 500; }
+
+        /* --- Buttons --- */
+        .main-btn { 
+            width: 100%; padding: 22px; background: var(--text); color: var(--bg);
+            border-radius: 24px; font-weight: 800; font-size: 1.1rem; border: none;
+            cursor: pointer; transition: 0.4s; display: flex; align-items: center;
+            justify-content: center; gap: 12px; letter-spacing: 1px;
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+        .main-btn:hover { background: var(--accent); color: white; transform: scale(1.02); box-shadow: 0 20px 40px var(--neon-glow); }
+
+        .sub-gallery-options { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 18px; 
+            margin-top: 20px; max-height: 0; opacity: 0; overflow: hidden; 
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sub-gallery-options.show { max-height: 200px; opacity: 1; }
+
+        .sub-btn { 
+            padding: 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            border-radius: 20px; color: var(--text); text-decoration: none;
+            font-weight: 700; font-size: 0.9rem; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .sub-btn:hover { background: var(--card); border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+
+        .logout-link { 
+            margin-top: 30px; display: inline-flex; align-items: center; gap: 8px;
+            color: #ef4444; text-decoration: none; font-weight: 800; font-size: 0.95rem;
+            transition: 0.3s; padding: 10px 20px; border-radius: 12px;
+        }
+        .logout-link:hover { background: rgba(239, 68, 68, 0.1); transform: translateX(5px); }
+
+        /* Colors Customizer */
+        .color-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 15px; }
+        .color-dot { height: 45px; border-radius: 12px; cursor: pointer; border: 3px solid transparent; transition: 0.3s; }
+        .color-dot.active { border-color: var(--text); transform: scale(1.1); }
+
+    </style>
+</head>
+<body data-theme="dark">
+    
+    <div class="mesh-gradient"></div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <a href="#" class="brand-wrapper">
+            <div class="logo-text">P3TO<span>.</span></div>
+        </a>
+        <div class="gear-btn" onclick="toggleSettings()"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        
+        <div class="settings-panel" id="panel">
+            <span style="font-size: 0.75rem; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;">Interface Style</span>
+            <div style="margin: 20px 0; display: flex; justify-content: space-between; align-items: center; font-weight: 800; cursor: pointer;" onclick="toggleTheme()">
+                <span id="themeLabel">Dark Visual</span>
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase;">Accent Color</span>
+            <div class="color-grid">
+                <div class="color-dot" style="background: #ff8c00;" onclick="setAccent('#ff8c00', this)"></div>
+                <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6', this)"></div>
+                <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444', this)"></div>
+                <div class="color-dot" style="background: #10b981;" onclick="setAccent('#10b981', this)"></div>
+                <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7', this)"></div>
+                <div class="color-dot" style="background: #f59e0b;" onclick="setAccent('#f59e0b', this)"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-hero">
+        <div class="badge"><i class="fa-solid fa-crown"></i> P3TO COMMUNITY</div>
+        <h1>Data <span class="glow-text">Archive</span><br>Ecosystem.</h1>
+
+        <div class="gallery-card">
+            <div class="banner-slot">
+                <img src="image_1.png" alt="Logo P3TO" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6044/6044464.png'">
+            </div>
+
+            <h2>P3TO Storage System</h2>
+            <p>Authorized personnel only. Select directory to begin exploration.</p>
+            
+            <div class="action-area">
+                <button class="main-btn" onclick="toggleGalleryOptions()">
+                    OPEN DIRECTORY <i class="fa-solid fa-arrow-right-long" id="chevron" style="transition:0.4s; margin-left: 10px;"></i>
+                </button>
+
+                <div class="sub-gallery-options" id="subOptions">
+                    <a href="p3to1.html" class="sub-btn"><i class="fa-solid fa-folder-open"></i> EVENT 1</a>
+                    <a href="p3to2.html" class="sub-btn"><i class="fa-solid fa-folder-open"></i> EVENT 2</a>
+                </div>
+
+                <a href="index.html" class="logout-link">
+                    Logout Dashboard <i class="fa-solid fa-power-off"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleSettings() { 
+            document.getElementById('panel').classList.toggle('active'); 
+        }
+
+        function toggleGalleryOptions() {
+            const options = document.getElementById('subOptions');
+            const chevron = document.getElementById('chevron');
+            options.classList.toggle('show');
+            chevron.style.transform = options.classList.contains('show') ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+
+        function setAccent(color, element) {
+            document.documentElement.style.setProperty('--accent', color);
+            localStorage.setItem('p3to-accent', color);
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            if(element) element.classList.add('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('p3to-theme', newTheme);
+            updateThemeUI(newTheme);
+        }
+
+        function updateThemeUI(theme) {
+            document.getElementById('themeLabel').innerText = theme === 'dark' ? 'Dark Visual' : 'Light Visual';
+            document.getElementById('themeIcon').className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('p3to-theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeUI(savedTheme);
+
+            const savedColor = localStorage.getItem('p3to-accent') || '#ff8c00';
+            setAccent(savedColor, null);
+        });
+    </script>
+</body>
+</html>
