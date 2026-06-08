@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Private Chat Room</title>
+    <style>
+        /* Variabel Warna Dasar (Light Mode Default) */
+        :root {
+            --bg-body: #efeae2;
+            --bg-chatbox: #ffffff;
+            --bg-messages: #f4f7f6;
+            --bg-msg-other: #ffffff;
+            --text-main: #333333;
+            --text-other: #333333;
+            --header-bg: #0070f3;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --form-bg: #ffffff;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        /* Variabel Warna Dark Mode */
+        [data-theme="dark"] {
+            --bg-body: #0b141a;
+            --bg-chatbox: #111b21;
+            --bg-messages: #0b141a;
+            --bg-msg-other: #202c33;
+            --text-main: #f0f2f5;
+            --text-other: #e9edef;
+            --header-bg: #202c33;
+            --input-bg: #2a3942;
+            --input-border: #2a3942;
+            --form-bg: #111b21;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background: var(--bg-body); display: flex; justify-content: center; align-items: center; height: 100vh; transition: background 0.3s; }
+        
+        /* Container Utama */
+        #chatbox { width: 100%; max-width: 480px; height: 100vh; background: var(--bg-chatbox); display: flex; flex-direction: column; box-shadow: 0 4px 20px var(--shadow); position: relative; transition: background 0.3s; }
+        @media (min-width: 485px) { #chatbox { height: 90vh; border-radius: 16px; overflow: hidden; } }
+
+        /* Header */
+        .header { background: var(--header-bg); color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; transition: background 0.3s; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header .avatar { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+        .header .info h3 { font-size: 16px; font-weight: 600; }
+        .header .info p { font-size: 12px; color: #e0e0e0; margin-top: 2px; }
+
+        /* Tombol Ganti Tema */
+        .theme-toggle { background: none; border: none; color: white; cursor: pointer; padding: 8px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle:hover { background: rgba(255,255,255,0.1); }
+        .theme-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+
+        /* Area Pesan */
+        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-color: var(--bg-messages); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; opacity: 0.95; transition: background 0.3s; }
+        
+        .msg { padding: 10px 14px; border-radius: 12px; max-width: 75%; font-size: 14px; line-height: 1.5; position: relative; animation: fadeIn 0.2s ease; }
+        .msg .sender-name { font-size: 11px; font-weight: bold; margin-bottom: 3px; display: block; opacity: 0.7; }
+        
+        .me { background: #0070f3; color: white; align-self: flex-end; border-top-right-radius: 2px; }
+        .other { background: var(--bg-msg-other); color: var(--text-other); align-self: flex-start; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        /* Form Input & Fitur Tambahan */
+        .form-container { position: relative; background: var(--form-bg); border-top: 1px solid var(--input-border); }
+        form { display: flex; padding: 14px; gap: 8px; align-items: center; }
+        
+        .input-wrapper { flex: 1; display: flex; align-items: center; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 24px; padding: 0 8px 0 16px; transition: all 0.2s; }
+        #msgInput { flex: 1; padding: 12px 0; border: none; background: transparent; font-size: 14px; outline: none; color: var(--text-main); }
+        
+        /* Tombol Emoji */
+        .emoji-btn { background: none; border: none; color: #64748b; font-size: 20px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        
+        /* Pop-up Emoji Box */
+        .emoji-picker { position: absolute; bottom: 70px; left: 14px; background: var(--bg-chatbox); border: 1px solid var(--input-border); border-radius: 12px; padding: 10px; display: none; grid-template-columns: repeat(7, 1fr); gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 50; width: 260px; }
+        .emoji-picker.show { display: grid; }
+        .emoji-item { font-size: 20px; cursor: pointer; text-align: center; padding: 4px; border-radius: 4px; transition: background 0.1s; }
+        .emoji-item:hover { background: var(--input-bg); }
+
+        /* Tombol Kirim */
+        .send-btn { background: #0070f3; color: white; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; shrink: 0; }
+        .send-btn:hover { background: #0051a8; transform: scale(1.05); }
+        .send-btn svg { width: 18px; height: 18px; fill: currentColor; margin-left: 2px; }
+
+        /* Overlay Pasang Nama */
+        #name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-chatbox); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; z-index: 100; }
+        #name-overlay.hidden { display: none !important; }
+        .overlay-card { width: 100%; text-align: center; color: var(--text-main); }
+        .overlay-card h2 { font-size: 22px; margin-bottom: 8px; }
+        .overlay-card p { font-size: 14px; opacity: 0.7; margin-bottom: 24px; }
+        #usernameInput { width: 100%; padding: 14px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); border-radius: 12px; font-size: 15px; outline: none; text-align: center; margin-bottom: 16px; }
+        .btn-join { width: 100%; padding: 14px; background: #0070f3; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div id="chatbox">
+    <div id="name-overlay">
+        <div class="overlay-card">
+            <h2>Mulai Chat Privat 🔒</h2>
+            <p>Masukkan nama kamu untuk bergabung ke ruang obrolan.</p>
+            <input type="text" id="usernameInput" placeholder="Ketik namamu..." maxlength="15" autocomplete="off">
+            <button class="btn-join" onclick="saveName()">Masuk ke Chat</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <div class="avatar">💬</div>
+            <div class="info">
+                <h3>Dunia Pribadi GEMI</h3>
+                <p id="user-status">Menghubungkan...</p>
+            </div>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Ganti Tema">
+            <svg id="theme-icon" viewBox="0 0 24 24">
+                <path d="M12.3 22c5.5 0 10-4.5 10-10 0-5.5-4.5-10-10-10C6.8 2 2.3 6.5 2.3 12c0 5.5 4.5 10 10 10zm0-18c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="form-container">
+        <div id="emojiPicker" class="emoji-picker"></div>
+        
+        <form id="form">
+            <div class="input-wrapper">
+                <input type="text" id="msgInput" placeholder="Ketik pesan..." autocomplete="off" required>
+                <button type="button" class="emoji-btn" onclick="toggleEmojiPicker()">😀</button>
+            </div>
+            <button type="submit" class="send-btn">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const msgDiv = document.getElementById('messages');
+    const form = document.getElementById('form');
+    const msgInput = document.getElementById('msgInput');
+    const nameOverlay = document.getElementById('name-overlay');
+    const userStatus = document.getElementById('user-status');
+    const emojiPicker = document.getElementById('emojiPicker');
+    
+    let myName = "";
+    let totalMessages = 0;
+
+    // Daftar Emoji Populer
+    const emojis = ['😀','😂','🤣','😍','😘','👍','🙏','🔥','🎉','❤️','😭','😎','👏','🙌','💩','✨','🤔','😮','💯','💯','👀'];
+
+    // Membuat elemen emoji di pop-up secara otomatis
+    emojis.forEach(emoji => {
+        const span = document.createElement('span');
+        span.className = 'emoji-item';
+        span.innerText = emoji;
+        span.onclick = () => {
+            msgInput.value += emoji;
+            msgInput.focus();
+            emojiPicker.classList.remove('show');
+        };
+        emojiPicker.appendChild(span);
+    });
+
+    function toggleEmojiPicker() {
+        emojiPicker.classList.toggle('show');
+    }
+
+    // Sistem Tema (Dark/Light Mode) yang tersimpan otomatis
+    function initTheme() {
+        const savedTheme = localStorage.getItem('chat_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('chat_theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const icon = document.getElementById('theme-icon');
+        if (theme === 'dark') {
+            // Ubah ke ikon Matahari
+            icon.innerHTML = '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.41-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41zM7.05 18.01l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41s-1.02-.39-1.41 0z"/>';
+        } else {
+            // Kembali ke ikon Bulan
+            icon.innerHTML = '<path d="M12.3 22c5.5 0 10-4.5 10-10 0-5.5-4.5-10-10-10C6.8 2 2.3 6.5 2.3 12c0 5.5 4.5 10 10 10zm0-18c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8z"/>';
+        }
+    }
+
+    // Sistem Identitas Pengguna
+    function checkUser() {
+        const savedName = localStorage.getItem('chat_username');
+        if (savedName) {
+            myName = savedName;
+            nameOverlay.classList.add('hidden');
+            userStatus.innerText = `Login: ${myName}`;
+            loadChat();
+            setInterval(loadChat, 2000);
+        }
+    }
+
+    function saveName() {
+        const input = document.getElementById('usernameInput').value.trim();
+        if (input) {
+            localStorage.setItem('chat_username', input);
+            myName = input;
+            nameOverlay.classList.add('hidden');
+            userStatus.innerText = `Login: ${myName}`;
+            loadChat();
+            setInterval(loadChat, 2000);
+        }
+    }
+
+    // Mengambil riwayat pesan dari Vercel KV
+    async function loadChat() {
+        try {
+            const res = await fetch('/api/chat');
+            const data = await res.json();
+            if (Array.isArray(data) && data.length !== totalMessages) {
+                msgDiv.innerHTML = '';
+                data.forEach(m => {
+                    const isMe = m.sender === myName;
+                    const div = document.createElement('div');
+                    div.className = `msg ${isMe ? 'me' : 'other'}`;
+                    div.innerHTML = isMe ? m.message : `<span class="sender-name">${m.sender}</span>${m.message}`;
+                    msgDiv.appendChild(div);
+                });
+                msgDiv.scrollTop = msgDiv.scrollHeight;
+                totalMessages = data.length;
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    // Mengirim pesan baru
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = msgInput.value.trim();
+        if(!message || !myName) return;
+        msgInput.value = '';
+        emojiPicker.classList.remove('show'); // Tutup picker saat kirim
+
+        const div = document.createElement('div');
+        div.className = `msg me`;
+        div.innerHTML = message;
+        msgDiv.appendChild(div);
+        msgDiv.scrollTop = msgDiv.scrollHeight;
+
+        await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sender: myName, message })
+        });
+        loadChat();
+    });
+
+    // Menutup emoji picker jika klik di luar form
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.form-container')) {
+            emojiPicker.classList.remove('show');
+        }
+    });
+
+    // Jalankan inisialisasi di awal
+    initTheme();
+    checkUser();
+</script>
+</body>
+</html>
